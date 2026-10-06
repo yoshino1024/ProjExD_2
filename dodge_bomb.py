@@ -2,6 +2,7 @@ import os
 import sys
 import pygame as pg
 import random
+import time
 
 
 WIDTH, HEIGHT = 1100, 650
@@ -12,6 +13,21 @@ DELTA={
     pg.K_RIGHT:(+5,0),
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+def gameover(screen:pg.Surface)->None:
+    bo_img=pg.Surface((WIDTH,HEIGHT))
+    pg.draw.rect(bo_img,(0,0,0),(0,0,WIDTH,HEIGHT))
+    bo_img.set_alpha(200)
+    fonto=pg.font.Font(None,80)
+    txt=fonto.render("Game Over",True,(255,255,255))
+    txt_rct=txt.get_rect(center=(WIDTH//2,HEIGHT//2))
+    bo_img.blit(txt,txt_rct)
+    kk_cry=pg.transform.rotozoom(pg.image.load("fig/8.png"),0,0.9)
+    bo_img.blit(kk_cry,kk_cry.get_rect(center=(WIDTH//2-200,HEIGHT//2)))
+    bo_img.blit(kk_cry,kk_cry.get_rect(center=(WIDTH//2+200,HEIGHT//2)))
+    screen.blit(bo_img,[0,0])
+    pg.display.update()
+    time.sleep(5)
+    
 
 def check_bound(rect: pg.Rect)->tuple[bool,bool]:
     """
@@ -46,7 +62,8 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct):
-            return
+                gameover(screen)
+                return
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
