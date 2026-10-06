@@ -13,15 +13,35 @@ DELTA={
     pg.K_RIGHT:(+5,0),
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+def get_kk_imgs()->dict[tuple[int,int],pg.Surface]:
+    kk_img=pg.image.load("fig/3.png")
+    kk_img_r=pg.transform.flip(kk_img,True,False)
+    kk_dict={
+        (0,0):pg.transform.rotozoom(kk_img,0,0.9),
+        (+5,0):pg.transform.rotozoom(kk_img_r,0,0.9),
+        (+5,-5): pg.transform.rotozoom(kk_img_r,45,0.9),
+        (0,-5): pg.transform.rotozoom(kk_img_r,90,0.9),
+        (-5,-5):pg.transform.rotozoom(kk_img_r,-45,0.9),
+        (-5,0):pg.transform.rotozoom(kk_img_r,0,0.9),
+        (-5,+5): pg.transform.rotozoom(kk_img_r,45,0.9),
+        (0,+5): pg.transform.rotozoom(kk_img_r,-90,0.9),
+        (+5,+5): pg.transform.rotozoom(kk_img_r,-45,0.9),
+    }
+    return kk_dict
+
+
 def init_bb_imgs() -> tuple[list[pg.Surface],list[int]]:
     bb_imgs=[]
+
     for r in range(1,11):
         bb_img=pg.Surface((20*r,20*r))
         pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r)
         bb_img.set_colorkey((0,0,0))
         bb_imgs.append(bb_img)
     bb_accs=[a for a in range(1,11)]
-    return bb_imgs,bb_accs        
+    return bb_imgs,bb_accs 
+       
 def gameover(screen:pg.Surface)->None:
     bo_img=pg.Surface((WIDTH,HEIGHT))
     pg.draw.rect(bo_img,(0,0,0),(0,0,WIDTH,HEIGHT))
@@ -71,6 +91,7 @@ def main():
     bb_img=bb_imgs[0]
     bb_rct=bb_img.get_rect()
     bb_rct.center=random.randint(0,WIDTH),random.randint(0,HEIGHT)
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -104,6 +125,7 @@ def main():
         bb_rct.height=bb_img.get_rect().height
         bb_rct.move_ip(avx,avy)
         yoko,tate=check_bound(bb_rct)
+        
         if not yoko:
             vx*=-1
         if not tate:
