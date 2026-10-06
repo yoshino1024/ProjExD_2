@@ -63,9 +63,14 @@ def main():
                 sum_mv[1]+=tpl[1]
         kk_rct.move_ip(sum_mv)
         bb_rct.move_ip(vx, vy)
-        
+        yoko,tate=check_bound(bb_rct)
+        if not yoko:
+            vx*=-1
+        if not tate:
+            vy*=-1
 
-
+        if check_bound(kk_rct)!=(True,True):
+            kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct)
         pg.display.update()
